@@ -23,7 +23,9 @@
     "@angular/router": "^19.0.0",
     "@capacitor/core": "7.2.0",
     "@ionic/angular": "^8.0.0",
+    "@pdftron/pdfjs-express-viewer": "^8.7.5",
     "ionicons": "^7.0.0",
+    "pdfjs-dist": "^5.2.133",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

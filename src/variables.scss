@@ -1,0 +1,24 @@
+* {
+    // COLORS
+    --primary-theme-color: #008040;
+    --secondary-theme-color: #008040;
+    --primary-text-color: #fff;
+    --secondary-text-color: #ffffff80;
+    --tertiary-text-color: rgba(255, 255, 255, 0.1);
+    --primary-background-color: #222;
+    --secondary-background-color: #111;
+
+
+    // SHAPES
+    --large-space: 20px;
+    --medium-space: 10px;
+    --small-space: 5px;
+    --primary-border: .1px solid var(--secondary-text-color);
+    --secondary-border: 2px solid var(--secondary-text-color);
+    --border-radius: 8px;
+
+    // TYPOGRAPHY
+    --font-family: "Fira Code", sans-serif;
+    --primary-font-size: 1rem;
+    --header-font-size: 1.8rem;
+}

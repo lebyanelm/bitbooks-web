@@ -1,0 +1,38 @@
+@import "../../../variables.scss";
+
+.navbar-wrapper {
+    width: 100vw;
+    background: var(--primary-background-color);
+}
+
+nav {
+    display: flex;
+    position: relative;
+    padding: var(--medium-space);
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+nav .brand-icon {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+nav .brand-icon svg {
+    height: 35px;
+    fill: var(--primary-text-color);
+}
+
+.profile-icon {
+    --size: 40px;
+    height: var(--size);
+    width: var(--size);
+    border: var(--primary-border);
+    border-radius: var(--size);
+    background-image: url(https://ui-avatars.com/api/?name=Libby+Lebyane&rounded=true);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}

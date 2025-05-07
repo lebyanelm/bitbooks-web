@@ -29,10 +29,17 @@
                 "glob": "**/*.svg",
                 "input": "node_modules/ionicons/dist/ionicons/svg",
                 "output": "./svg"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/lib",
+                "output": "lib"
               }
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
-            "scripts": []
+            "scripts": [
+              "src/lib/webviewer.min.js"
+            ]
           },
           "configurations": {
             "production": {

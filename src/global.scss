@@ -35,3 +35,55 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+/* default resets */
+* {
+    font-family: var(--font-family) !important;
+}
+
+.fake-highlight {
+    background-color: blue;
+}
+
+
+/* ionic adjustments */
+ion-icon {
+    background: transparent;
+    font-size: 1.5rem;
+    padding: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    * {
+        --ion-background-color: #000;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    * {
+        --ion-background-color: #000;
+    }
+}
+
+/* buttons */
+button {
+    appearance: none;
+    padding: var(--small-space);
+    border: none;
+}
+
+button.transparent {
+    background: transparent;
+    padding: 0;
+}
+
+button.icon-text {
+    display: flex;
+    align-items: center;
+    gap: var(--small-space);
+}
+
+button.icon-text .text {
+    font-size: var(--primary-font-size);
+    font-weight: bold;
+}
