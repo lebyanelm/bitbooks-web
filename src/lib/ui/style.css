@@ -1,3 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+/* Resets */
+.Header,
+.ContextMenuPopup {
+    display: none !important;
+}
+
+* {
+  font-family: "Fira Sans", sans-serif !important;
+}
+
+/* Custom additions */
+.fake-highlight {
+  display: block;
+  position: absolute;
+  pointer-events: all;
+  opacity: 0.3;
+  border-radius: 3px;
+  transform: translateX(-3px);
+  z-index: 35;
+  transition: all 500ms linear ease-in-out;
+}
+
+.fake-highlight[data-visible="false"] {
+  opacity: 0 !important;
+}
+
+.fake-highlight:hover {
+  background: green;
+}
+
 @media(min-width:901px){.hide-in-desktop{display:none}}@media(min-width:641px)and (max-width:900px){.App:not(.is-in-desktop-only-mode) .hide-in-tablet{display:none}}@media(max-width:640px)and (min-width:431px){.hide-in-mobile{display:none}}@media(max-width:430px){.hide-in-small-mobile{display:none}}.always-hide{display:none}.Accessibility{position:fixed;z-index:9999;display:flex;align-items:center;overflow:hidden;background:#fff;color:#000;font-size:1.2em;border:1px solid var(--border);height:36px;padding:0 10px}.Accessibility.visible{transform:translateY(0)}.Accessibility.hidden{transform:translateY(-100%)}.Accessibility button{border:none;background-color:transparent;color:#000;margin:0 7px;padding:2px 6px}
 @media(min-width:901px){.hide-in-desktop{display:none}}@media(min-width:641px)and (max-width:900px){.App:not(.is-in-desktop-only-mode) .hide-in-tablet{display:none}}@media(max-width:640px)and (min-width:431px){.hide-in-mobile{display:none}}@media(max-width:430px){.hide-in-small-mobile{display:none}}.always-hide{display:none}.tooltip--bottom,.tooltip--bottomLeft,.tooltip--left,.tooltip--right,.tooltip--top{position:absolute;z-index:100;background:#222;font-size:12px;padding:6px 8px;border-radius:3px;transition:opacity .3s ease-out;-webkit-backface-visibility:hidden;backface-visibility:hidden}.tooltip--bottom .tooltip__content:before,.tooltip--bottomLeft .tooltip__content:before,.tooltip--left .tooltip__content:before,.tooltip--right .tooltip__content:before,.tooltip--top .tooltip__content:before{content:"";width:0;height:0;position:absolute}.tooltip--top{margin-top:-10px}.tooltip--top .tooltip__content:before{bottom:-6px;left:50%;margin-left:-8px;border-left:8px solid transparent;border-right:8px solid transparent;border-top:6px solid #222}.tooltip--bottom{margin-top:10px}.tooltip--bottom .tooltip__content:before{top:-6px;left:50%;margin-left:-8px;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:6px solid #222}.tooltip--bottomLeft{margin-top:10px}.tooltip--bottomLeft .tooltip__content:before{top:-5px;margin-left:-7px;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:6px solid #222}.tooltip--left{margin-left:-10px;white-space:nowrap}.tooltip--left .tooltip__content:before{border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:6px solid #222;right:-6px;top:50%;margin-top:-6px}.tooltip--right{margin-left:10px;white-space:nowrap}.tooltip--right .tooltip__content:before{border-top:6px solid transparent;border-bottom:6px solid transparent;border-right:6px solid #222;left:-6px;top:50%;margin-top:-6px}.tooltip__shortcut{margin-left:3px;opacity:.5}.tooltip__content{background:#222;color:#fff;font-size:12px}
 @media(min-width:901px){.hide-in-desktop{display:none}}@media(min-width:641px)and (max-width:900px){.App:not(.is-in-desktop-only-mode) .hide-in-tablet{display:none}}@media(max-width:640px)and (min-width:431px){.hide-in-mobile{display:none}}@media(max-width:430px){.hide-in-small-mobile{display:none}}.always-hide{display:none}.Icon{width:22px;height:22px;pointer-events:none;color:var(--icon-color)}.Icon circle:not([fill*="#"]),.Icon path:not([fill*="#"]),.Icon polygon:not([fill*="#"]),.Icon rect:not([fill*="#"]){fill:currentColor}.Icon:not(.disabled) path[fill=default]{fill:var(--icon-color)}.Icon.disabled,.Icon.disabled path{fill:var(--disabled-icon)}.Icon circle[fill=fill],.Icon circle[fill=none],.Icon path[fill=fill],.Icon path[fill=none],.Icon path[fill=stroke],.Icon polygon[fill=fill],.Icon polygon[fill=none],.Icon rect[fill=fill],.Icon rect[fill=none]{fill:none}

@@ -6,6 +6,9 @@ import {
   ViewChild,
 } from "@angular/core";
 import WebViewer from "@pdftron/pdfjs-express-viewer";
+import IPageInfo from "src/app/interfaces/IPageInfo";
+import IText from "src/app/interfaces/ITexts";
+import { TranscriptionService } from "src/app/services/transcription.service";
 
 @Component({
   selector: "app-document-container",
@@ -27,10 +30,15 @@ export class DocumentContainerComponent implements AfterViewInit {
   webviewIframe!: Document;
   docViewer!: any;
   document!: any;
+  currentHighlightId!: null | number;
+
+  // Parameters
   zoomLevel!: number;
   displayMode: any;
+  readSpeed: number = 1;
+  readPitch: number = 0;
 
-  constructor() {}
+  constructor(private transcriptionService: TranscriptionService) {}
   ngAfterViewInit() {
     WebViewer(
       {
@@ -41,7 +49,16 @@ export class DocumentContainerComponent implements AfterViewInit {
       this.documentViewWrapper.nativeElement,
     ).then((instance: any) => {
       this.instance = instance;
+
+      // Customize the UI of the PDF viewer.
       this.instance.setTheme("dark");
+      console.log(this.instance.UI.Feature)
+      this.instance.UI.disableFeatures([
+        this.instance.UI.Feature.ContextMenu
+      ])
+      this.instance.UI.disableElements([
+        "contextmenu"
+      ])
 
       // Initialize the initial page.
       this.instance.Core.documentViewer.addEventListener(
@@ -98,11 +115,31 @@ export class DocumentContainerComponent implements AfterViewInit {
 
   async setCurrentPage(num: number) {
     this.pageNumber = num;
+
+    // Clear the current highlights, then place in the new ones.
     this.clearFakeHighlights();
-    await this.getPageText();
-    this.toggleFakeHighlight(0);
-    setTimeout(() => this.toggleFakeHighlight(1), 5000);
-    setTimeout(() => this.toggleFakeHighlight(2), 10000);
+
+    // Get contents of the current page.
+    const texts: IText[] = await this.getPageText();
+    const pageInfo: IPageInfo = {
+      page_number: this.pageNumber,
+      document_title: this.documentName,
+      speed: this.readSpeed,
+      pitch: this.readPitch
+    }
+
+    // Convert these texts into audio format for the reader
+    this.transcriptionService.startTranscription(texts, pageInfo)
+      .then((transcription) => {
+        this.transcriptionService.startReader(this.onReaderHighlightUpdate.bind(this))
+      }).catch((error) => {
+        console.log(error);
+      })
+  }
+
+  onReaderHighlightUpdate(hId: number): void {
+    this.currentHighlightId = hId;
+    this.toggleFakeHighlight(hId);
   }
 
   clearFakeHighlights() {
@@ -133,16 +170,6 @@ export class DocumentContainerComponent implements AfterViewInit {
           maxX = Math.max(...allX),
           minY = Math.min(...allY),
           maxY = Math.max(...allY),
-          viewerTopLeft = this.document.getViewerCoordinates(
-            this.pageNumber,
-            minX,
-            maxY,
-          ),
-          viewerBottomRight = this.document.getViewerCoordinates(
-            this.pageNumber,
-            maxX,
-            minY,
-          ),
           x = parseFloat(minX.toFixed(2)),
           y = parseFloat(minY.toFixed(2)),
           width = Math.abs(maxX - minX),
@@ -150,17 +177,19 @@ export class DocumentContainerComponent implements AfterViewInit {
           coords = { x, y, width, height };
         if (lineText.trim() !== "" || !lineText.includes("____")) {
           this.createFakeHighlight(coords, rowIdx);
+          formattedLines.push({ text_content: lineText.trim(), text_pos: rowIdx })
         }
       }
-
       charIdx += lineText.length + 1;
     }
+
+    return formattedLines
   }
 
   createFakeHighlight(
     coords: { x: number; y: number; width: number; height: number },
     lineId: number,
-    color: string = "orange",
+    color: string = "yellow",
   ) {
     const fakeHighlight = document.createElement("div");
     fakeHighlight.className = `fake-highlight page${this.pageNumber}`;
@@ -169,7 +198,7 @@ export class DocumentContainerComponent implements AfterViewInit {
     fakeHighlight.id = `fh-${lineId}`;
     fakeHighlight.style.left = coords.x * this.zoomLevel + "px";
     fakeHighlight.style.top = coords.y * this.zoomLevel + "px";
-    fakeHighlight.style.width = coords.width * this.zoomLevel + "px";
+    fakeHighlight.style.width = (coords.width + 6) * this.zoomLevel + "px";
     fakeHighlight.style.height = coords.height * this.zoomLevel + "px";
     fakeHighlight.style.backgroundColor = color;
     const pageContainer = this.webviewIframe.getElementById(
