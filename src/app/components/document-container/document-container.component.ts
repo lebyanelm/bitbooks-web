@@ -6,9 +6,11 @@ import {
   ViewChild,
 } from "@angular/core";
 import WebViewer from "@pdftron/pdfjs-express-viewer";
+import { IDocument } from "src/app/interfaces/IDocument";
 import IPageInfo from "src/app/interfaces/IPageInfo";
 import IText from "src/app/interfaces/ITexts";
 import { TranscriptionService } from "src/app/services/transcription.service";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-document-container",
@@ -17,9 +19,9 @@ import { TranscriptionService } from "src/app/services/transcription.service";
   standalone: false,
 })
 export class DocumentContainerComponent implements AfterViewInit {
-  @ViewChild("DocumentViewWrapper")
-  documentViewWrapper!: ElementRef<HTMLDivElement>;
-  @Input() documentSrc: string = "/assets/GLS_may_2021.pdf";
+  @ViewChild("DocumentViewWrapper") documentViewWrapper!: ElementRef<HTMLDivElement>;
+
+  @Input() docRef!: IDocument | undefined;
 
   instance!: any;
 
@@ -29,7 +31,8 @@ export class DocumentContainerComponent implements AfterViewInit {
   documentName!: string;
   webviewIframe!: Document;
   docViewer!: any;
-  document!: any;
+  annotations: any = [];
+  lastLoadedPage = 0;
   currentHighlightId!: null | number;
 
   // Parameters
@@ -40,25 +43,38 @@ export class DocumentContainerComponent implements AfterViewInit {
 
   constructor(private transcriptionService: TranscriptionService) {}
   ngAfterViewInit() {
+    this.showDocumentLoader(true);
+    const documentChecker = setInterval(() => {
+      if (this.docRef) {
+        this.showDocument();
+        this.lazyLoadPageAnnotations();
+        clearInterval(documentChecker);
+      }
+    }, 500);
+  }
+
+  showDocument() {
     WebViewer(
       {
         path: "../../lib",
-        initialDoc: this.documentSrc,
+        initialDoc: this.docRef?.document_source,
         licenseKey: "M7gQD7R5lp6pzUTnB54Z",
       },
       this.documentViewWrapper.nativeElement,
     ).then((instance: any) => {
       this.instance = instance;
+      const { Annotations, annotManager, docViewer } = this.instance;
+      const customAnnot =
+
 
       // Customize the UI of the PDF viewer.
       this.instance.setTheme("dark");
-      console.log(this.instance.UI.Feature)
       this.instance.UI.disableFeatures([
         this.instance.UI.Feature.ContextMenu
-      ])
+      ]);
       this.instance.UI.disableElements([
         "contextmenu"
-      ])
+      ]);
 
       // Initialize the initial page.
       this.instance.Core.documentViewer.addEventListener(
@@ -71,27 +87,27 @@ export class DocumentContainerComponent implements AfterViewInit {
             webviewIframe.contentWindow?.document;
 
           // To be able to customize the UI.
-          this.injectCustomStyles();
           this.instance.UI.setZoomLevel(this.defaultZoom);
 
           // Set up the document viewer.
           this.docViewer = this.instance.docViewer;
-          this.document = this.docViewer.getDocument();
+
           this.zoomLevel = this.docViewer.getZoomLevel();
           this.displayMode = this.docViewer
             .getDisplayModeManager()
             .getDisplayMode();
+          const pageIndex = this.pageNumber-1;
+          const pageCoords = {x:100,y:200}
+          const viewCoords = this.displayMode.pageToWindow(this.pageNumber, {...pageCoords,pageIndex});
+          console.log("Viewer coords:", viewCoords);
 
           // Determine page information.
-          this.documentName = this.document.filename;
           this.docViewer.enableReadOnlyMode();
-          // this.setCurrentPage(this.instance.docViewer.getCurrentPage());
-
           this.docViewer.addEventListener(
             "pageNumberUpdated",
             (pageNumber: number) => {
               this.pageNumber = pageNumber;
-              this.setCurrentPage(this.pageNumber);
+              this.updatePages();
             },
           );
 
@@ -100,7 +116,7 @@ export class DocumentContainerComponent implements AfterViewInit {
             (pageNumber: number) => {
               if (this.pageNumber === pageNumber) {
                 this.zoomLevel = this.docViewer.getZoomLevel();
-                this.setCurrentPage(this.pageNumber);
+                this.updatePages();
               }
             },
           );
@@ -113,28 +129,76 @@ export class DocumentContainerComponent implements AfterViewInit {
     });
   }
 
-  async setCurrentPage(num: number) {
-    this.pageNumber = num;
+  showDocumentLoader(state = true) {
+    this.documentViewWrapper.nativeElement.setAttribute("data-loader", state.toString());
+  }
 
-    // Clear the current highlights, then place in the new ones.
-    this.clearFakeHighlights();
-
-    // Get contents of the current page.
-    const texts: IText[] = await this.getPageText();
-    const pageInfo: IPageInfo = {
-      page_number: this.pageNumber,
-      document_title: this.documentName,
-      speed: this.readSpeed,
-      pitch: this.readPitch
+  lazyLoadPageAnnotations(lazyLoadCount = 10) {
+    let pageStart = this.pageNumber,
+      pageEnd = this.pageNumber+10;
+    console.log(pageEnd, this.lastLoadedPage)
+    if (this.lastLoadedPage < pageEnd) {
+      if (pageStart < 0) pageStart = 1
+      console.log(pageStart, pageEnd)
+      fetch([environment.backend,
+        "document", this.docRef?.id,
+        "annotations", `${pageStart}-${pageEnd}`].join("/")).then((response) => {
+          response.json().then((json: any) => {
+            this.annotations = json.data;
+            this.lastLoadedPage += this.annotations.length;
+            this.showDocumentLoader(false);
+            const docViewerChecker = setInterval(() => {
+              if (this.docViewer) {
+                this.renderAnnotations();
+                clearInterval(docViewerChecker);
+              }
+            }, 500);
+          });
+        });
+    } else {
+      console.log("Annotations already loaded.")
     }
+  }
 
+  renderAnnotations() {
+    console.log("Rendering annotations...", this.annotations.length)
+    const page = 1;
+    const x = 100;
+    const y = 200;
+    const width = 150;
+    const height = 50;
+    const customAnnot = new this.instance.Annotations.RectangleAnnotation()
+    console.log(customAnnot)
+    // this.annotations.forEach((page: any) => {
+    //   page.sentences.forEach((sentence: any) => {
+    //     sentence.read_annotations.forEach((annotation: any, index: number) => {
+    //       // const annotation =
+    //     //   this.createAnnotation(page.page_number,
+    //     //     {
+    //     //       x: annotation.x,
+    //     //       y: annotation.y,
+    //     //       width: annotation.w,
+    //     //       height: annotation.h},
+    //     //     sentence.id+index)
+    //     });
+    //   });
+    // });
+  }
+
+  async updatePages(num = undefined) {
+    const pageNumber = num || this.pageNumber;
+    // Check if we can lazy load page data
+    if (pageNumber%5 === 0) {
+      this.lazyLoadPageAnnotations();
+    }
+    this.renderAnnotations();
     // Convert these texts into audio format for the reader
-    this.transcriptionService.startTranscription(texts, pageInfo)
-      .then((transcription) => {
-        this.transcriptionService.startReader(this.onReaderHighlightUpdate.bind(this))
-      }).catch((error) => {
-        console.log(error);
-      })
+    // this.transcriptionService.startTranscription(texts, pageInfo)
+    //   .then((transcription) => {
+    //     this.transcriptionService.startReader(this.onReaderHighlightUpdate.bind(this))
+    //   }).catch((error) => {
+    //     console.log(error);
+    //   })
   }
 
   onReaderHighlightUpdate(hId: number): void {
@@ -148,63 +212,27 @@ export class DocumentContainerComponent implements AfterViewInit {
     fakeHighlights.forEach((fakeHighlight) => fakeHighlight.remove());
   }
 
-  async getPageText() {
-    const pageText = await this.document.loadPageText(this.pageNumber),
-      lines = pageText.split("\n"),
-      formattedLines = [];
-
-    let charIdx = 0;
-    for (let rowIdx = 0; rowIdx < lines.length; rowIdx++) {
-      const startIdx = charIdx,
-        lineText = lines[rowIdx],
-        endIdx = startIdx + lineText.trim().length;
-      if (endIdx > startIdx) {
-        const quads = await this.document.getTextPosition(
-            this.pageNumber,
-            startIdx,
-            endIdx,
-          ),
-          allX = quads.flatMap((q: any) => [q.x1, q.x2, q.x3, q.x4]),
-          allY = quads.flatMap((q: any) => [q.y1, q.y2, q.y3, q.y4]),
-          minX = Math.min(...allX),
-          maxX = Math.max(...allX),
-          minY = Math.min(...allY),
-          maxY = Math.max(...allY),
-          x = parseFloat(minX.toFixed(2)),
-          y = parseFloat(minY.toFixed(2)),
-          width = Math.abs(maxX - minX),
-          height = Math.abs(maxY - minY),
-          coords = { x, y, width, height };
-        if (lineText.trim() !== "" || !lineText.includes("____")) {
-          this.createFakeHighlight(coords, rowIdx);
-          formattedLines.push({ text_content: lineText.trim(), text_pos: rowIdx })
-        }
-      }
-      charIdx += lineText.length + 1;
-    }
-
-    return formattedLines
-  }
-
-  createFakeHighlight(
+  createAnnotation(
+    pageNumber: number,
     coords: { x: number; y: number; width: number; height: number },
-    lineId: number,
-    color: string = "yellow",
+    annotId: string,
+    color: string = "tomato",
   ) {
-    const fakeHighlight = document.createElement("div");
-    fakeHighlight.className = `fake-highlight page${this.pageNumber}`;
-    fakeHighlight.setAttribute("data-visible", "false");
-    fakeHighlight.setAttribute("data-lineId", `${lineId}`);
-    fakeHighlight.id = `fh-${lineId}`;
-    fakeHighlight.style.left = coords.x * this.zoomLevel + "px";
-    fakeHighlight.style.top = coords.y * this.zoomLevel + "px";
-    fakeHighlight.style.width = (coords.width + 6) * this.zoomLevel + "px";
-    fakeHighlight.style.height = coords.height * this.zoomLevel + "px";
-    fakeHighlight.style.backgroundColor = color;
+    const annotation = document.createElement("div");
+    annotation.className = `annotation page${pageNumber}`;
+    annotation.setAttribute("data-visible", "false");
+    annotation.setAttribute("data-top", `${coords.y}`)
+    annotation.style.border = "2px solid red";
+    annotation.id = `annotation-${annotId}`;
+    annotation.style.left = coords.x * this.zoomLevel + "px";
+    annotation.style.top = coords.y * this.zoomLevel + "px";
+    annotation.style.width = (coords.width + 6) * this.zoomLevel + "px";
+    annotation.style.height = coords.height * this.zoomLevel + "px";
+    annotation.style.backgroundColor = color;
     const pageContainer = this.webviewIframe.getElementById(
-      "pageContainer" + this.pageNumber,
+      "pageContainer" + pageNumber,
     );
-    pageContainer?.appendChild(fakeHighlight);
+    pageContainer?.prepend(annotation);
   }
 
   toggleFakeHighlight(highlightId: number | string) {
@@ -221,18 +249,17 @@ export class DocumentContainerComponent implements AfterViewInit {
 
       // Show the new highlight.
       highlight.setAttribute("data-visible", "true");
-    }
-  }
 
-  injectCustomStyles() {
-    const link: HTMLLinkElement = document.createElement("link"),
-      hostname = location.hostname,
-      port = location.port,
-      protocol = location.protocol,
-      source = "assets/custom-webview-styles.css",
-      url = `${protocol}//${hostname}:${port}/${source}`;
-    link.rel = "stylesheet";
-    link.href = url;
-    this.webviewIframe.head.appendChild(link);
+      // Scroll to the element if its out of sight
+      const scrollHeight = highlight.getAttribute("data-top"),
+          scrollElement = this.docViewer.getScrollViewElement();
+      if (scrollHeight) {
+        scrollElement.scrollTo({
+          top: parseInt(scrollHeight),
+          left: 0,
+          behaviour: "smooth"
+        });
+      }
+    }
   }
 }

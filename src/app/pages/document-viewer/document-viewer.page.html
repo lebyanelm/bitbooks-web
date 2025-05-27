@@ -1,4 +1,5 @@
 <div class="page-container">
-  <app-header [mode]="'reader'" #header></app-header>
-  <app-document-container></app-document-container>
+  <app-header [mode]="'reader'" [docRef]="this.document" #ViewerHeader></app-header>
+  <app-document-container [docRef]="this.document" #DocumentContainer></app-document-container>
+  <app-viewer-controller #ViewerController></app-viewer-controller>
 </div>

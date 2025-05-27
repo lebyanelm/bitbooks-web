@@ -2,7 +2,7 @@
 
 .navbar-wrapper {
     width: 100vw;
-    background: var(--primary-background-color);
+    // background: var(--secondary-background-color);
 }
 
 nav {
@@ -12,12 +12,8 @@ nav {
     width: 100%;
     align-items: center;
     justify-content: space-between;
-}
-
-nav .brand-icon {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    border-bottom: var(--primary-border);
+    background: var(--secondary-background-color);
 }
 
 nav .brand-icon svg {
@@ -31,8 +27,18 @@ nav .brand-icon svg {
     width: var(--size);
     border: var(--primary-border);
     border-radius: var(--size);
-    background-image: url(https://ui-avatars.com/api/?name=Libby+Lebyane&rounded=true);
+    background-image: url(https://ui-avatars.com/api/?name=Libby+Lebyane&rounded=true&background=000000&color=ffffff&bold=true&format=svg);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
+}
+
+nav.reader-mode {
+    position: relative;
+}
+
+nav.reader-mode .current-document-details {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }

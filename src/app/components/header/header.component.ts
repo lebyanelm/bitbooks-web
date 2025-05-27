@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { IDocument } from 'src/app/interfaces/IDocument';
 
 @Component({
   selector: 'app-header',
@@ -8,6 +9,7 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class HeaderComponent  implements OnInit {
   @Input() mode: "reader" | "normal" = "normal";
+  @Input() docRef!: IDocument | undefined;
   
   constructor() { }
   ngOnInit() {}

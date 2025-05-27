@@ -36,54 +36,199 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
 
-/* default resets */
+/* Default resets */
 * {
     font-family: var(--font-family) !important;
+    font-weight: 600;
+    color: var(--primary-text-color);
+    box-sizing: border-box !important;
 }
 
-.fake-highlight {
-    background-color: blue;
+.page-wrapper {
+  padding: var(--large-space);
 }
 
-
-/* ionic adjustments */
+/* Ionic adjustments */
 ion-icon {
     background: transparent;
     font-size: 1.5rem;
     padding: 0;
 }
 
+/* Buttons */
+.button,
+.button-group,
+.button-toggle {
+    display: flex;
+}
+
+.button-group,
+.button-toggle {
+    align-items: center;
+}
+
+.button-group {
+    gap: var(--medium-space) !important;
+}
+
+.button-toggle {
+    padding: var(--small-space);
+    background: transparent !important;
+    border: var(--primary-border);
+    border-color: var(--secondary-theme-color);
+    gap: var(--medium-space) !important;
+    height: fit-content;
+}
+
+.button-toggle .button {
+    background: transparent;
+    padding: 0;
+}
+
+.button-toggle .button {
+    height: 28px;
+    width: 28px;
+    position: relative;
+    --translate: 2px;
+    transform: translateX(var(--translate)) translateY(var(--translate));
+
+    &::before {
+        content: "";
+        display: block;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        left: -2px;
+        top: -2px;
+        background: var(--secondary-theme-color);
+        opacity: 0;
+        border-radius: var(--border-radius);
+        z-index: -1;
+    }
+
+    &:hover {
+        transform: translateX(var(--translate)) translateY(var(--translate)) scale(1.01);
+        background: transparent;
+
+        &::before {
+            opacity: 1 !important;
+        }
+    }
+
+    .text {
+        color: var(--primary-text-color) !important;
+    }
+}
+
+.button-toggle .button[data-active="true"] {
+    &::before {
+        opacity: .5;
+    }
+}
+
+.button,
+.button-toggle {
+    background: var(--secondary-theme-color);
+    padding: var(--small-space) var(--medium-space);
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    gap: var(--small-space);
+    opacity: .9;
+}
+
+.button:hover,
+.button-toggle:hover {
+    opacity: 1;
+    transform: scale(1.01);
+    background: var(--secondary-theme-color);
+}
+
+.button:hover svg,
+.button-toggle:hover svg {
+    stroke: var(--secondary-theme-color);
+}
+
+.button[data-disabled="true"] {
+    opacity: .5;
+}
+
+.button .text {
+    color: var(--primary-background-color);
+    transform: translateY(3px);
+    font-weight: bolder;
+}
+
+.button.transparent .text {
+    color: var(--primary-text-color);
+}
+
+.button svg {
+    fill: var(--primary-background-color);
+    stroke: var(--secondary-theme-color);
+    stroke-width: 2px;
+}
+
+.button.transparent {
+    background: transparent !important;
+}
+
+.button.transparent svg {
+    fill: var(--primary-background-color) !important;
+    stroke: var(--primary-text-color);
+}
+
+
+// Inputs
+input[type="range"] {
+    appearance: none;
+    background: linear-gradient(to right, var(--secondary-theme-color) 0%, var(--secondary-theme-color) var(--progress), #ccc var(--progress), #ccc 100%);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+
+    &::-webkit-slider-runnable-track {
+        appearance: none;
+        background: var(--secondary-background-color);
+        opacity: .5;
+        border-radius: var(--border-radius);
+    }
+
+    &::-webkit-slider-thumb {
+        appearance: none;
+        background-color: transparent;
+        height: 10px;
+        width: 10px;
+    }
+}
+
+
+// Background overlay for modals
+.background-overlay {
+    display: block;
+    height: 100vh;
+    width: 100vw;
+    background: var(--secondary-background-color);
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    transition: opacity 500ms ease-in-out;
+    pointer-events: none;
+
+    &[data-visible="true"] {
+        opacity: 0.75;
+        pointer-events: all;
+    }
+}
+
 @media (prefers-color-scheme: dark) {
     * {
-        --ion-background-color: #000;
+        --ion-background-color: rgb(17, 17, 17);
     }
 }
 
 @media (prefers-color-scheme: light) {
     * {
-        --ion-background-color: #000;
+        --ion-background-color: rgb(17, 17, 17);
     }
-}
-
-/* buttons */
-button {
-    appearance: none;
-    padding: var(--small-space);
-    border: none;
-}
-
-button.transparent {
-    background: transparent;
-    padding: 0;
-}
-
-button.icon-text {
-    display: flex;
-    align-items: center;
-    gap: var(--small-space);
-}
-
-button.icon-text .text {
-    font-size: var(--primary-font-size);
-    font-weight: bold;
 }

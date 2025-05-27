@@ -11,7 +11,7 @@
 }
 
 /* Custom additions */
-.fake-highlight {
+.annotation {
   display: block;
   position: absolute;
   pointer-events: all;
@@ -26,7 +26,7 @@
   opacity: 0 !important;
 }
 
-.fake-highlight:hover {
+.annotation:hover {
   background: green;
 }
 
