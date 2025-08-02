@@ -3,17 +3,19 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+    path: 'folders/:folder_name',
+    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
+    title: "Doku | Browse documents"
   },
   {
     path: 'viewer',
-    loadChildren: () => import('./pages/document-viewer/document-viewer.module').then( m => m.DocumentViewerPageModule)
+    loadChildren: () => import('./pages/document-viewer/document-viewer.module').then( m => m.DocumentViewerPageModule),
+    title: "Doku | Document Viewer "
   },
   {
     path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    redirectTo: 'folders/default',
+    pathMatch: 'full',
   },
 ];
 

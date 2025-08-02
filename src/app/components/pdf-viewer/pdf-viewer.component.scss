@@ -1,0 +1,8 @@
+// PDF PAGE DOCUMENT CONTAINER
+.pdf-container {
+    position: absolute;
+    height: calc(100vh - var(--controller-height));
+    width: 100vw;
+    overflow: hidden;
+    overflow-y: auto;
+}

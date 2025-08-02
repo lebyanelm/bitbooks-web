@@ -1,5 +1,3 @@
-@import "../../../variables.scss";
-
 .navbar-wrapper {
     width: 100vw;
     // background: var(--secondary-background-color);
@@ -14,6 +12,10 @@ nav {
     justify-content: space-between;
     border-bottom: var(--primary-border);
     background: var(--secondary-background-color);
+}
+
+nav .brand-icon {
+    margin-left: var(--medium-space);
 }
 
 nav .brand-icon svg {

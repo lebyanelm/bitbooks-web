@@ -1,0 +1,27 @@
+<div class="modal-content">
+  <div class="upload-container">
+    <div class="upload-control-container" *ngIf="!this.isProcessingFile">
+      <ion-icon class="upload-icon" name="cloud-upload-outline"></ion-icon>
+      <h2>Select a document to upload.</h2>
+
+      <div [class]="'button icon' + (this.isDisabled ? ' disabled' : '')" (click)="this.browseFiles()">
+          <div class="icon">
+              <ion-icon name="folder-open-outline"></ion-icon>
+          </div>
+          <div class="text">Browse my computer files</div>
+      </div>
+    </div>
+
+    <div class="upload-control-container" *ngIf="this.isProcessingFile">
+      <span class="upload-icon">
+        {{this.currentProgress?.percentage || '0%'}}
+      </span>
+      <h2>{{ this.currentProgress !== undefined ? (this.currentProgress.stage === 0 ? "Extracting and processing document text" : "Finalising extracting data.") : "Uploading your document" }}</h2>
+      <p>Your file is currently being uploaded to our server and being processed.</p>
+
+      <div class="progress-container">
+        <div class="progress-current" [style.width]="this.currentProgress?.percentage || '0%'"></div>
+      </div>
+    </div>
+  </div>
+</div>

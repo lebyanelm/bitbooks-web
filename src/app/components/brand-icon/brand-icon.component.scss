@@ -1,0 +1,11 @@
+svg {
+    --fill: var(--primary-text-color);
+    --size: 80px;
+    fill: var(--fill);
+    width: var(--size);
+}
+
+.overlay {
+    stroke: var(--fill);
+    stroke-width: 2px;
+}

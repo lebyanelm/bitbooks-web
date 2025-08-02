@@ -1,15 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule, } from '@angular/common';
-import { DocumentContainerComponent } from "../../components/document-container/document-container.component";
 import { HeaderComponent } from "../../components/header/header.component";
 import { IonicModule } from '@ionic/angular';
 import { ViewerControllerComponent } from 'src/app/components/viewer-controller/viewer-controller.component';
+import { PDFViewerComponent } from 'src/app/components/pdf-viewer/pdf-viewer.component';
+import { BrandIconComponent } from 'src/app/components/brand-icon/brand-icon.component';
+import { FileUploadComponent } from 'src/app/modals/file-upload/file-upload.component';
+import { DeleteConfirmComponent } from 'src/app/modals/delete-confirm/delete-confirm.component';
 
 @NgModule({
   declarations: [
     HeaderComponent,
-    DocumentContainerComponent,
-    ViewerControllerComponent
+    PDFViewerComponent,
+    ViewerControllerComponent,
+    BrandIconComponent,
+    FileUploadComponent,
+    DeleteConfirmComponent
   ],
   imports: [
     CommonModule,
@@ -17,8 +23,11 @@ import { ViewerControllerComponent } from 'src/app/components/viewer-controller/
   ],
   exports: [
     HeaderComponent,
-    DocumentContainerComponent,
-    ViewerControllerComponent
+    PDFViewerComponent,
+    ViewerControllerComponent,
+    BrandIconComponent,
+    FileUploadComponent,
+    DeleteConfirmComponent
   ]
 })
 export class ComponentsModule { }

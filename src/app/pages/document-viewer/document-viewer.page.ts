@@ -1,11 +1,8 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DocumentContainerComponent } from 'src/app/components/document-container/document-container.component';
-import { HeaderComponent } from 'src/app/components/header/header.component';
+import { PDFViewerComponent } from 'src/app/components/pdf-viewer/pdf-viewer.component';
 import { ViewerControllerComponent } from 'src/app/components/viewer-controller/viewer-controller.component';
-import IBackendResponseData from 'src/app/interfaces/IBackendResponse';
-import { IDocument } from 'src/app/interfaces/IDocument';
-import { environment } from 'src/environments/environment';
+import { IDocumentData } from 'src/app/interfaces/IDocumentData';
 
 @Component({
   selector: 'app-document-viewer',
@@ -14,32 +11,22 @@ import { environment } from 'src/environments/environment';
   standalone: false
 })
 export class DocumentViewerPage implements AfterViewInit {
-  @ViewChild("ViewerHeader") header!: HeaderComponent;
-  @ViewChild("DocumentContainer") documentContainer!: DocumentContainerComponent;
-  @ViewChild("ViewerController") viewerController!: ViewerControllerComponent;
+  @ViewChild("pdfviewer") viewer!: PDFViewerComponent;
+  @ViewChild("viewercontrols") viewerControls!: ViewerControllerComponent;
 
-  document: IDocument | undefined = undefined;
+  document: IDocumentData | undefined = undefined;
   
-  constructor(private router: ActivatedRoute) {
-    this.router.queryParamMap.subscribe((paramsMap) => {
-      const docId = paramsMap.get("docId");
-      fetch([environment.backend, "document", docId].join("/"))
-        .then((response) => {
-          response.json().then((json: IBackendResponseData<IDocument | undefined>) => {
-            this.document = json.data;
-          })
-        })
-    });
+  constructor() {
   }
 
   ngAfterViewInit() {
     // Setup the height of the document view wrapper
-    const navbarWrapper: HTMLDivElement | null = document.querySelector("div.navbar-wrapper"), 
-          documentViewWrapper: HTMLDivElement | null = document.querySelector("div.document-view-wrapper");
-    if (navbarWrapper && documentViewWrapper) {
-      const navbarRects = navbarWrapper.getBoundingClientRect();
-      const navbarHeight = navbarRects.height;
-      documentViewWrapper.style.height = window.innerHeight-navbarHeight + "px";
+    const viewControllerElement: HTMLDivElement | null = document.querySelector("div.viewer-controller-container"), 
+          viewerElement: HTMLDivElement | null = document.querySelector("div.pdf-container");
+    if (viewControllerElement && viewerElement) {
+      const controllerRect = viewControllerElement.getBoundingClientRect();
+      const controllerHeight = controllerRect.height;
+      viewerElement.style.setProperty("--controller-height", `${controllerHeight}px`);
     }
   }
 }

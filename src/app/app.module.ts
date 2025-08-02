@@ -7,19 +7,23 @@ import { ComponentsModule } from "./modules/components/components.module";
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { TranscriptionService } from './services/transcription.service';
+import { RouterService } from './services/router.service';
+import { LoaderService } from './services/loader.service';
+import { AudioService } from './services/audio.service';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(),
+    IonicModule.forRoot({animated: false}),
     AppRoutingModule,
     ComponentsModule
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    TranscriptionService
+    RouterService,
+    LoaderService,
+    AudioService
   ],
   bootstrap: [AppComponent],
 })

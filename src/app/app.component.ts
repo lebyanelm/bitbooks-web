@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
+import { LoaderService } from './services/loader.service';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +8,9 @@ import { Component } from '@angular/core';
   standalone: false,
 })
 export class AppComponent {
-  constructor() {}
+  isShowLoader = false;
+  
+  constructor(private loaderService: LoaderService) {
+    this.loaderService.isLoading.subscribe((state) => this.isShowLoader = state);
+  }
 }

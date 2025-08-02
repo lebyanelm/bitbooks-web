@@ -1,0 +1,44 @@
+.modal-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background: var(--secondary-background-color) !important;
+}
+
+.upload-icon {
+    font-size: 96px;
+    font-weight: 900 !important;
+    width: 100px;
+}
+
+
+.progress-container {
+    width: 100%;
+    height: fit-content;
+    position: relative;
+    border: 3px solid var(--primary-background-color);
+
+    &::before {
+        content: "";
+        width: 100%;
+        background: var(--primary-background-color);
+        z-index: 1;
+    }
+
+    &::before,
+    .progress-current {
+        display: block;
+        height: 10px;
+        border-radius: var(--border-radius);
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .progress-current {
+        z-index: 20;
+        background: var(--secondary-theme-color);
+    }
+}
